@@ -10,51 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-// USER = USER#<username> + PROFILE#<username>
-// USER_ADDRESS = NA + NA
-// ORDER = USER#<username> + ORDER#<orderid>
-// ORDER_ITEM = ITEM#<itemid> + ORDER#<orderid>
-
-type Address struct {
-	Street      string
-	PostalCode  uint
-	State       string
-	CountryCode string
-}
-
-type User struct {
-	PK string `dynamodbav:"PK"`
-	SK string `dynamodbav:"SK"`
-
-	Username  string               `dynamodbav:"username"`
-	Fullname  string               `dynamodbav:"fullname"`
-	Email     string               `dynamodbav:"email"`
-	CreatedAt string               `dynamodbav:"created_at"`
-	Addresses map[string][]Address `dynamodbav:"addresses"`
-}
-
-type Order struct {
-	PK string
-	SK string
-
-	IdOrder   string
-	Username  string
-	Address   Address
-	Status    string
-	CreatedAt string
-}
-
-type Item struct {
-	PK string
-	SK string
-
-	IdItem      string
-	IdOrder     string
-	ProductName string
-	Price       float64
-	Status      string
-}
-
 var ctx = context.Background()
 var client = GetClient()
 var tableName = "ecommerce"
