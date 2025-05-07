@@ -16,11 +16,11 @@ type User struct {
 	PK string `dynamodbav:"PK"`
 	SK string `dynamodbav:"SK"`
 
-	Username  string               `dynamodbav:"username"`
-	Fullname  string               `dynamodbav:"fullname"`
-	Email     string               `dynamodbav:"email"`
-	CreatedAt string               `dynamodbav:"created_at"`
-	Addresses map[string][]Address `dynamodbav:"addresses"`
+	Username  string             `dynamodbav:"username"`
+	Fullname  string             `dynamodbav:"fullname"`
+	Email     string             `dynamodbav:"email"`
+	CreatedAt string             `dynamodbav:"created_at"`
+	Addresses map[string]Address `dynamodbav:"addresses"`
 }
 
 type Order struct {

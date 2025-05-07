@@ -11,7 +11,7 @@ var Users = []UserDto{{
 }, {
 	Username: "johndoe",
 	Fullname: "John Doe",
-	Email:    "jhondoe1@gmail.com",
+	Email:    "jhondoe1@hotmail.com",
 }}
 
 var Addresses = []AddressDto{{

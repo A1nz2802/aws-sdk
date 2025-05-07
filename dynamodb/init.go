@@ -10,6 +10,9 @@ import (
 )
 
 func Init() error {
+
+	log.Println("starting...")
+
 	_, err := CreateTable()
 
 	if err != nil {
@@ -17,12 +20,16 @@ func Init() error {
 		return err
 	}
 
+	log.Println("table created successfully")
+
 	err = populate()
 
 	if err != nil {
 		log.Printf("Error populating data: %v", err)
 		return err
 	}
+
+	log.Println("table populated successfully")
 
 	return nil
 }
@@ -62,13 +69,15 @@ func GetClient() *dynamodb.Client {
 	err := godotenv.Load()
 
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		// or panic
+		log.Fatalf("Error loading .env file, %v", err)
 	}
 
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 
 	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+		// or panic
+		log.Fatalf("unable to load AWS SDK config, %v", err)
 	}
 
 	return dynamodb.NewFromConfig(cfg)

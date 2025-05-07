@@ -21,26 +21,31 @@ func AddUser(user UserDto) error {
 		Fullname:  user.Fullname,
 		Email:     user.Email,
 		CreatedAt: time.Now().Format(time.RFC3339),
-		Addresses: map[string][]Address{},
+		Addresses: map[string]Address{},
 	}
 
 	item, err := attributevalue.MarshalMap(userFormated)
 	if err != nil {
-		panic(err)
+		log.Printf("failed to marshal user data for %s: %v\n", user.Username, err)
+		return err
 	}
 	_, err = client.PutItem(ctx, &dynamodb.PutItemInput{
 		TableName: aws.String(tableName), Item: item,
 	})
+
 	if err != nil {
-		log.Printf("Couldn't add item to table. Here's why: %v\n", err)
+		log.Printf("couldn't add item to table: %v\n", err)
+		return err
 	}
-	return err
+
+	return nil
 }
 
 // USER + ADDRESS
 func AddAddress(data AddressDto) error {
-	pkValue := "USER#" + data.Username
-	skValue := "PROFILE#" + data.Username
+	username := data.Username
+	pkValue := "USER#" + username
+	skValue := "PROFILE#" + username
 	attibuteName := "addresses."
 
 	upd := expression.NewBuilder().
@@ -50,7 +55,8 @@ func AddAddress(data AddressDto) error {
 
 	expr, err := upd.Build()
 	if err != nil {
-		return fmt.Errorf("error construyendo la expresión: %w", err)
+		log.Printf("failed to build expression for user %s: %v", username, err)
+		return err
 	}
 
 	_, err = client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
@@ -64,9 +70,13 @@ func AddAddress(data AddressDto) error {
 		ExpressionAttributeValues: expr.Values(),
 	})
 
-	log.Printf("Dirección agrega para el usuario %v", data.Username)
+	if err != nil {
+		log.Printf("failed to update address for user %s: %v", username, err)
+		return err
+	}
 
-	return err
+	log.Printf("address added successfully for user: %v", username)
+	return nil
 }
 
 // USER + ORDER

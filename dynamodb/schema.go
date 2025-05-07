@@ -32,10 +32,15 @@ func CreateTable() (*types.TableDescription, error) {
 		}},
 		TableName:   aws.String(tableName),
 		BillingMode: types.BillingModePayPerRequest,
+		/* ProvisionedThroughput: &types.ProvisionedThroughput{
+			ReadCapacityUnits:  aws.Int64(1),
+			WriteCapacityUnits: aws.Int64(1),
+		}, */
 	})
 
 	if err != nil {
-		log.Printf("Couldn't create table %v. Here's why: %v\n", tableName, err)
+		log.Printf("couldn't create table: %v\n", err)
+		return nil, err
 	}
 
 	waiter := dynamodb.NewTableExistsWaiter(client)
@@ -45,9 +50,9 @@ func CreateTable() (*types.TableDescription, error) {
 	}, 5*time.Minute)
 
 	if err != nil {
-		log.Printf("Wait for table exists failed. Here's why: %v\n", err)
+		log.Printf("wait for table exists failed: %v\n", err)
+		return nil, err
 	}
 
-	log.Printf("Creating table :)")
-	return table.TableDescription, err
+	return table.TableDescription, nil
 }
