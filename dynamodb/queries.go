@@ -214,6 +214,45 @@ func UpdateEmailUser(username string, email string) error {
 	return nil
 }
 
+func RemoveCreatedAtAttribute(username string) (User, error) {
+	pk := "USER#" + username
+	sk := "PROFILE#" + username
+
+	output, err := client.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{Value: pk},
+			"SK": &types.AttributeValueMemberS{Value: sk},
+		},
+		UpdateExpression: aws.String("REMOVE #c"),
+		ExpressionAttributeNames: map[string]string{
+			"#c": "created_at",
+		},
+		ReturnValues: types.ReturnValueAllNew,
+	})
+
+	if err != nil {
+		log.Printf("failed to remove created_at: %v", err)
+		return User{}, err
+	}
+
+	var user User
+
+	if len(output.Attributes) == 0 {
+		log.Printf("no attributes returned after removing created_at for user: %s", username)
+		return User{}, nil
+	}
+
+	err = attributevalue.UnmarshalMap(output.Attributes, &user)
+
+	if err != nil {
+		log.Printf("failed to unmarshal updated user: %v", err)
+		return User{}, err
+	}
+
+	return user, nil
+}
+
 func GetOrdersByUserAndStatus(username string, status string) ([]Order, error) {
 	userOrderGSI := "UserOrdersGSI"
 
@@ -243,4 +282,27 @@ func GetOrdersByUserAndStatus(username string, status string) ([]Order, error) {
 	}
 
 	return orders, nil
+}
+
+func RemoveItemOrder(idItem string, idOrder string) error {
+	pk := "ITEM#" + idItem
+	sk := "ORDER#" + idOrder
+
+	_, err := client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]types.AttributeValue{
+			"PK": &types.AttributeValueMemberS{Value: pk},
+			"SK": &types.AttributeValueMemberS{Value: sk},
+		},
+		ConditionExpression: aws.String("Price > :p"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":p": &types.AttributeValueMemberN{Value: "289"},
+		},
+	})
+
+	if err != nil {
+		log.Printf("failed to remove item order: %v", err)
+	}
+
+	return nil
 }
