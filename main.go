@@ -14,7 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Initialization Failed: %v", err)
 		return
-	} */
+	}
 
 	user, err := dynamodb.GetUserByPk("a1nzdev")
 
@@ -23,7 +23,14 @@ func main() {
 		return
 	}
 
-	log.Println(user)
+	log.Println(user) */
+
+	err := dynamodb.UpdateEmailUser("a1nzdev", "a1nzdev28@hotmail.com")
+
+	if err != nil {
+		log.Fatalf("failed to update: %v", err)
+		return
+	}
 
 	/*
 		 	orders, err := dynamodb.GetOrdersByUserAndStatus("a1nzdev", "SHIPPED")
