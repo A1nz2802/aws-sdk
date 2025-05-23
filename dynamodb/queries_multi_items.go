@@ -20,6 +20,7 @@ func GetOrders(username string) ([]Order, error) {
 			":u": &types.AttributeValueMemberS{Value: pk},
 			":s": &types.AttributeValueMemberS{Value: "ORDER#"},
 		},
+		/* Select: types.SelectCount, */
 	})
 
 	if err != nil {
@@ -35,4 +36,39 @@ func GetOrders(username string) ([]Order, error) {
 	}
 
 	return orders, nil
+}
+
+func GetAllItems() ([]GenericItem, error) {
+	output, err := client.Scan(ctx, &dynamodb.ScanInput{
+		TableName: aws.String(tableName),
+	})
+
+	if err != nil {
+		log.Printf("failed to scan: %v", err)
+		return nil, err
+	}
+
+	var genericItems []GenericItem
+	err = attributevalue.UnmarshalListOfMaps(output.Items, &genericItems)
+
+	if err != nil {
+		log.Printf("failed to unmarshal map: %v", err)
+		return nil, err
+	}
+
+	/*
+		// how to call this func
+		items, err := dynamodb.GetAllItems()
+
+		if err != nil {
+			log.Fatalf("failed to scan: %v", err)
+		}
+
+		for _, item := range items {
+			log.Printf("Item: %v - %v", item.PK, item.SK)
+		}
+
+	*/
+
+	return genericItems, nil
 }

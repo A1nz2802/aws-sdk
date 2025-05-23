@@ -52,7 +52,7 @@ func AddAddress(data AddressDto) error {
 	username := data.Username
 	pkValue := "USER#" + username
 	skValue := "PROFILE#" + username
-	attibuteName := "addresses."
+	attibuteName := "Addresses."
 
 	upd := expression.NewBuilder().
 		WithUpdate(expression.
@@ -115,10 +115,10 @@ func AddOrder(data OrderDto) error {
 
 	for _, orderItemDto := range data.Items {
 		itemCreated := Item{
-			PK:          "ITEM#" + orderItemDto.IdItem,
-			SK:          "ORDER#" + data.OrderId,
-			IdItem:      orderItemDto.IdItem,
+			PK:          "ORDER#" + data.OrderId,
+			SK:          "ITEM#" + orderItemDto.IdItem,
 			IdOrder:     data.OrderId,
+			IdItem:      orderItemDto.IdItem,
 			ProductName: orderItemDto.ProductName,
 			Price:       orderItemDto.Price,
 			Status:      orderItemDto.Status,
@@ -163,8 +163,8 @@ func GetUserByPk(username string) (User, error) {
 		},
 		ProjectionExpression: aws.String("#u, #e"),
 		ExpressionAttributeNames: map[string]string{
-			"#u": "username",
-			"#e": "email",
+			"#u": "Username",
+			"#e": "Email",
 		},
 	})
 
@@ -200,7 +200,7 @@ func UpdateEmailUser(username string, email string) error {
 			"SK": &types.AttributeValueMemberS{Value: sk},
 		},
 		UpdateExpression:         aws.String("SET #e = :email"),
-		ExpressionAttributeNames: map[string]string{"#e": "email"},
+		ExpressionAttributeNames: map[string]string{"#e": "Email"},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":email": &types.AttributeValueMemberS{Value: email},
 		},
@@ -226,7 +226,7 @@ func RemoveCreatedAtAttribute(username string) (User, error) {
 		},
 		UpdateExpression: aws.String("REMOVE #c"),
 		ExpressionAttributeNames: map[string]string{
-			"#c": "created_at",
+			"#c": "Created_at",
 		},
 		ReturnValues: types.ReturnValueAllNew,
 	})
@@ -285,8 +285,8 @@ func GetOrdersByUserAndStatus(username string, status string) ([]Order, error) {
 }
 
 func RemoveItemOrder(idItem string, idOrder string) error {
-	pk := "ITEM#" + idItem
-	sk := "ORDER#" + idOrder
+	pk := "ORDER#" + idOrder
+	sk := "ITEM#" + idItem
 
 	_, err := client.DeleteItem(ctx, &dynamodb.DeleteItemInput{
 		TableName: aws.String(tableName),

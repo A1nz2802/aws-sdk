@@ -22,6 +22,9 @@ func CreateTable() (*types.TableDescription, error) {
 		}, {
 			AttributeName: aws.String("SK"),
 			AttributeType: types.ScalarAttributeTypeS,
+		}, {
+			AttributeName: aws.String("Price"),
+			AttributeType: types.ScalarAttributeTypeN,
 		}},
 		KeySchema: []types.KeySchemaElement{{
 			AttributeName: aws.String("PK"),
@@ -29,6 +32,19 @@ func CreateTable() (*types.TableDescription, error) {
 		}, {
 			AttributeName: aws.String("SK"),
 			KeyType:       types.KeyTypeRange,
+		}},
+		LocalSecondaryIndexes: []types.LocalSecondaryIndex{{
+			IndexName: aws.String("OrderByPriceIndex"),
+			KeySchema: []types.KeySchemaElement{{
+				AttributeName: aws.String("PK"),
+				KeyType:       types.KeyTypeHash,
+			}, {
+				AttributeName: aws.String("Price"),
+				KeyType:       types.KeyTypeRange,
+			}},
+			Projection: &types.Projection{
+				ProjectionType: types.ProjectionTypeKeysOnly,
+			},
 		}},
 		TableName:   aws.String(tableName),
 		BillingMode: types.BillingModePayPerRequest,

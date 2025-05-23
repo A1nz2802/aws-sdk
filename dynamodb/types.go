@@ -16,11 +16,11 @@ type User struct {
 	PK string `dynamodbav:"PK"`
 	SK string `dynamodbav:"SK"`
 
-	Username  string             `dynamodbav:"username"`
-	Fullname  string             `dynamodbav:"fullname"`
-	Email     string             `dynamodbav:"email"`
-	CreatedAt string             `dynamodbav:"created_at"`
-	Addresses map[string]Address `dynamodbav:"addresses"`
+	Username  string             `dynamodbav:"Username"`
+	Fullname  string             `dynamodbav:"Fullname"`
+	Email     string             `dynamodbav:"Email"`
+	CreatedAt string             `dynamodbav:"Created_at"`
+	Addresses map[string]Address `dynamodbav:"Addresses"`
 }
 
 type Order struct {
@@ -70,4 +70,10 @@ type OrderItemDto struct {
 	ProductName string
 	Price       float64
 	Status      string
+}
+
+type GenericItem struct {
+	PK         string
+	SK         string
+	Attributes map[string]any
 }
