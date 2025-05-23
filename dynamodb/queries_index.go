@@ -49,3 +49,42 @@ func GetOrdersByPrice(idOrder string) ([]any, error) {
 
 	return result, nil
 }
+
+func CreateOrderStatusDateGSI() error {
+	_, err := client.UpdateTable(ctx, &dynamodb.UpdateTableInput{
+		TableName: aws.String(tableName),
+		AttributeDefinitions: []types.AttributeDefinition{{
+			AttributeName: aws.String("PK"),
+			AttributeType: types.ScalarAttributeTypeS,
+		}, {
+			AttributeName: aws.String("OrderStatusDate"),
+			AttributeType: types.ScalarAttributeTypeS,
+		}},
+		GlobalSecondaryIndexUpdates: []types.GlobalSecondaryIndexUpdate{{
+			Create: &types.CreateGlobalSecondaryIndexAction{
+				IndexName: aws.String("OrderStatusDateIndex"),
+				KeySchema: []types.KeySchemaElement{{
+					AttributeName: aws.String("PK"),
+					KeyType:       types.KeyTypeHash,
+				}, {
+					AttributeName: aws.String("OrderStatusDate"),
+					KeyType:       types.KeyTypeRange,
+				}},
+				Projection: &types.Projection{
+					ProjectionType: types.ProjectionTypeAll,
+				},
+				/* ProvisionedThroughput: &types.ProvisionedThroughput{
+					ReadCapacityUnits:  aws.Int64(1),
+					WriteCapacityUnits: aws.Int64(1),
+				}, */
+			},
+		}},
+	})
+
+	if err != nil {
+		log.Printf("failed to create GSI: %v", err)
+		return err
+	}
+
+	return nil
+}

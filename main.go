@@ -15,7 +15,7 @@ func main() {
 		return
 	} */
 
-	_, err := dynamodb.GetOrdersByPrice("f6a9c5d2")
+	err := dynamodb.CreateOrderStatusDateGSI()
 
 	if err != nil {
 		log.Fatalf("failed to get price: %v", err)

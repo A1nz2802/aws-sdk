@@ -89,13 +89,14 @@ func AddAddress(data AddressDto) error {
 // ORDER + ITEM
 func AddOrder(data OrderDto) error {
 	order := Order{
-		PK:        "USER#" + data.Username,
-		SK:        "ORDER#" + data.OrderId,
-		Username:  data.Username,
-		IdOrder:   data.OrderId,
-		Status:    data.Status,
-		Address:   data.Address,
-		CreatedAt: time.Now().Format(time.RFC3339),
+		PK:              "USER#" + data.Username,
+		SK:              "ORDER#" + data.OrderId,
+		Username:        data.Username,
+		IdOrder:         data.OrderId,
+		Status:          data.Status,
+		Address:         data.Address,
+		OrderStatusDate: data.Status + "#" + time.Now().Format(time.RFC3339),
+		CreatedAt:       time.Now().Format(time.RFC3339),
 	}
 
 	orderAv, err := attributevalue.MarshalMap(order)

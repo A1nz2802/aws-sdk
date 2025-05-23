@@ -27,11 +27,12 @@ type Order struct {
 	PK string
 	SK string
 
-	IdOrder   string
-	Username  string
-	Address   Address
-	Status    string
-	CreatedAt string
+	IdOrder         string
+	Username        string
+	Address         Address
+	Status          string
+	CreatedAt       string
+	OrderStatusDate string
 }
 
 type Item struct {
