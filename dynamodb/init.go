@@ -1,5 +1,7 @@
 package dynamodb
 
+// https://www.youtube.com/watch?v=DIQVJqiSUkE
+
 import (
 	"context"
 	"log"
