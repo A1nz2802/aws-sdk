@@ -2,36 +2,32 @@ package main
 
 import (
 	"aws-sdk/sqs"
-	"fmt"
 	"log"
 )
 
 func main() {
 
-	/* _, err := sqs.CreateQueue(false)
-
+	/* err := sqs.CreateExampleQueues()
 	if err != nil {
-		log.Fatalf("Initialization Failed: %v", err)
+		log.Printf("failed to create example queues: %v", err)
+		return
+	}
+
+	err = sqs.AttachDeadLetterQueue("my-std-queue", "my-dlq-queue", false)
+	if err != nil {
+		log.Printf("failed to attach dlq to queue: %v", err)
 		return
 	} */
 
-	sqs.ListQueues()
-
-	err := sqs.SendMessage("https://sqs.us-east-1.amazonaws.com/266735829330/MyQueue", "WEIRD TEXT HERE :D")
-
+	err := sqs.TestEmptyQueue("my-std-queue")
 	if err != nil {
-		log.Printf("Error here :D: %v", err)
+		log.Printf("failed to test empety queue: %v", err)
 		return
 	}
 
-	messages, err := sqs.ReceiveMessage("https://sqs.us-east-1.amazonaws.com/266735829330/MyQueue", 10, 1)
-
+	/* err := sqs.SimulateCommunication("my-std-queue", false)
 	if err != nil {
-		log.Printf("Error here :D: %v", err)
+		log.Printf("failed to simulate communication: %v", err)
 		return
-	}
-
-	for _, message := range messages {
-		fmt.Println(message)
-	}
+	} */
 }
