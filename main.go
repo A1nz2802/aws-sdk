@@ -29,5 +29,5 @@ func main() {
 	if err != nil {
 		log.Printf("failed to simulate communication: %v", err)
 		return
-	} */
+	*/
 }
