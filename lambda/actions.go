@@ -36,3 +36,16 @@ func CreateFunction(functionName string, handlerName string, iamRoleArn *string,
 
 	return state, nil
 }
+
+func DeleteFunction(functionName string) error {
+
+	_, err := client.DeleteFunction(ctx, &lambda.DeleteFunctionInput{
+		FunctionName: aws.String(functionName),
+	})
+
+	if err != nil {
+		return fmt.Errorf("couldn't delete function %v. Here's why: %w", functionName, err)
+	}
+
+	return nil
+}

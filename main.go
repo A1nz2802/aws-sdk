@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aws-sdk/sqs"
+	"aws-sdk/lambda"
 	"log"
 )
 
@@ -19,15 +19,22 @@ func main() {
 		return
 	} */
 
-	err := sqs.TestEmptyQueue("my-std-queue")
+	/* err := sqs.TestEmptyQueue("my-std-queue")
 	if err != nil {
 		log.Printf("failed to test empety queue: %v", err)
 		return
-	}
+	} */
 
 	/* err := sqs.SimulateCommunication("my-std-queue", false)
 	if err != nil {
 		log.Printf("failed to simulate communication: %v", err)
 		return
 	*/
+
+	_, err := lambda.CreateExample1()
+
+	if err != nil {
+		log.Println("error creating lambda example 01")
+	}
+
 }

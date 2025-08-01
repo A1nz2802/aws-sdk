@@ -10,16 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func CreateRole(roleName string, trustedUserArn string) (*types.Role, error) {
+func CreateRole(roleName string, trustPolicy PolicyDocument) (*types.Role, error) {
 	var role *types.Role
-	trustPolicy := PolicyDocument{
-		Version: string(DefaultVersionPolicy),
-		Statement: []PolicyStatement{{
-			Effect:    "Allow",
-			Principal: map[string]string{"AWS": trustedUserArn},
-			Action:    []string{"sts:AssumeRole"},
-		}},
-	}
 
 	policyBytes, err := json.Marshal(trustPolicy)
 
@@ -33,7 +25,7 @@ func CreateRole(roleName string, trustedUserArn string) (*types.Role, error) {
 	})
 
 	if err != nil {
-		log.Printf("Couldn't create role %v. Here's why: %v\n", roleName, err)
+		return &types.Role{}, fmt.Errorf("couldn't create role %v. here's why: %v", roleName, err)
 	}
 
 	role = result.Role
@@ -54,6 +46,19 @@ func AttachRolePolicy(policyArn string, roleName string) error {
 	return err
 }
 
+func DetachRolePolicy(roleName string, policyArn string) error {
+	_, err := client.DetachRolePolicy(ctx, &iam.DetachRolePolicyInput{
+		PolicyArn: aws.String(policyArn),
+		RoleName:  aws.String(roleName),
+	})
+
+	if err != nil {
+		log.Printf("Couldn't detach policy from role %v. Here's why: %v\n", roleName, err)
+	}
+
+	return err
+}
+
 func GetRole(roleName string) (*types.Role, error) {
 	var role *types.Role
 	result, err := client.GetRole(ctx, &iam.GetRoleInput{RoleName: aws.String(roleName)})
@@ -65,4 +70,17 @@ func GetRole(roleName string) (*types.Role, error) {
 	role = result.Role
 
 	return role, err
+}
+
+func DeleteRole(roleName string) error {
+
+	_, err := client.DeleteRole(ctx, &iam.DeleteRoleInput{
+		RoleName: aws.String(roleName),
+	})
+
+	if err != nil {
+		return fmt.Errorf("couldn't delete function %v. Here's why: %w", roleName, err)
+	}
+
+	return nil
 }
