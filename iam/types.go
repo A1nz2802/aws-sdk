@@ -15,4 +15,7 @@ type PolicyStatement struct {
 	Action    []string
 	Principal map[string]string `json:",omitempty"`
 	Resource  *string           `json:",omitempty"`
+	Condition PolicyCondition   `json:",omitempty"`
 }
+
+type PolicyCondition map[string]map[string]string

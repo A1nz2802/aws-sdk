@@ -31,10 +31,10 @@ func main() {
 		return
 	*/
 
-	_, err := lambda.CreateExample1()
+	err := lambda.CreateExample1()
 
 	if err != nil {
-		log.Println("error creating lambda example 01")
+		log.Println("❌ error creating lambda example 01")
 	}
 
 }

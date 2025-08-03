@@ -15,12 +15,13 @@ func CreateFunction(functionName string, handlerName string, iamRoleArn *string,
 	var state types.State
 
 	_, err := client.CreateFunction(ctx, &lambda.CreateFunctionInput{
-		Code:         &types.FunctionCode{ZipFile: zipPackage.Bytes()},
-		FunctionName: aws.String(functionName),
-		Role:         iamRoleArn,
-		Handler:      aws.String(handlerName),
-		Publish:      true,
-		Runtime:      types.RuntimeGo1x,
+		Code:          &types.FunctionCode{ZipFile: zipPackage.Bytes()},
+		FunctionName:  aws.String(functionName),
+		Role:          iamRoleArn,
+		Handler:       aws.String(handlerName),
+		Publish:       true,
+		Runtime:       types.RuntimeProvidedal2,
+		Architectures: []types.Architecture{types.ArchitectureArm64},
 	})
 
 	if err != nil {
